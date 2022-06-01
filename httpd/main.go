@@ -1,8 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
+	"newsfeeder/httpd/handler"
+	"newsfeeder/platform/newsfeed"
 
 	"github.com/gin-gonic/gin"
 )
@@ -67,8 +68,41 @@ func setupRouter() *gin.Engine {
 	return r
 }
 
+func setupNewsfeedRouter() *gin.Engine {
+	feed := newsfeed.New()
+
+	r := gin.Default()
+	r.GET("/ping", handler.PingGetv1())
+	r.GET("/newsfeed", handler.NewsfeedGet(feed))
+	r.POST("/newsfeed", handler.NewsfeedPost(feed))
+	return r
+}
+
+func setupNewsRouter() *gin.Engine {
+	// Disable Console Color
+	// gin.DisableConsoleColor()
+	r := gin.Default()
+
+	// Ping test
+	//r.GET("/ping", handler.PingGet)
+
+	// Pingv1 test
+	r.GET("/ping", handler.PingGetv1())
+
+	// add news feed
+
+	//r.GET("/news", handler.Newsfeed())
+	return r
+}
+
 func main() {
-	fmt.Println("news feeder")
+	/* 	fmt.Println("news feeder")
+
+	   	feed := newsfeed.New()
+
+	   	fmt.Println(feed)
+	   	feed.Add(newsfeed.Item{"Hello", "Erudio learner"})
+	   	fmt.Println(feed) */
 
 	/* 	r := gin.Default()
 	   	r.GET("/ping", func(c *gin.Context) {
@@ -79,8 +113,11 @@ func main() {
 	   	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	*/
 
-	r := setupRouter()
+	/* 	r := setupNewsRouter()
+	   	// Listen and Server in 0.0.0.0:8080
+	   	r.Run(":8081") */
+
+	r := setupNewsfeedRouter()
 	// Listen and Server in 0.0.0.0:8080
 	r.Run(":8081")
-
 }
